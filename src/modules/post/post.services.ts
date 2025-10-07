@@ -21,34 +21,37 @@ const createPost = async(payload: Prisma.PostCreateInput): Promise<Post>=>{
 }
 
 // get all post data
-const getAllPost = async({page,limit,search}
-      :{page:number;limit:number; search:string}
+const getAllPost = async({page=1,limit=2,search ,isFeatured : isfeatured}
+      :{page?:number;
+        limit?:number;
+        search?:string;
+        isFeatured?:boolean}
 )=>{
-    
+
     // 
     const skip = (page -1) *limit;
+     
+
+    // search query and filter query
+    const query:any = {
+        // if we have multiple data querying option then we need to use AND
+       AND:[
+          search && {
+            OR:[
+                {title:{contains:search,mode:"insensitive"}},
+                { content:{contains:search, mode:"insensitive"}}
+            ], 
+        },
+        typeof isfeatured === "boolean" && {isfeatured}
+       ].filter(Boolean)
+    }
 
 
     // 
       const result = await prisma.post.findMany({
         skip,
         take:limit,
-        where:{
-            OR:[
-                {
-                 title:{
-                        contains:search,
-                        mode:"insensitive"
-                    }
-                },
-                  {
-                 content:{
-                        contains:search,
-                        mode:"insensitive"
-                    }
-                }
-            ]
-        },
+        where: query,
         select:{
             id : true,
             title: true,
