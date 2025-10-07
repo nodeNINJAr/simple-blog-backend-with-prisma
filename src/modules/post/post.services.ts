@@ -21,11 +21,15 @@ const createPost = async(payload: Prisma.PostCreateInput): Promise<Post>=>{
 }
 
 // get all post data
-const getAllPost = async({page=1,limit=2,search ,isFeatured : isfeatured}
-      :{page?:number;
+const getAllPost = async({page=1,limit=2,search ,isFeatured : isfeatured, tags, sort}
+      :{
+        page?:number;
         limit?:number;
         search?:string;
-        isFeatured?:boolean}
+        isFeatured?:boolean;
+        tags?:string[];
+        sort?:string;
+    }
 )=>{
 
     // 
@@ -33,7 +37,7 @@ const getAllPost = async({page=1,limit=2,search ,isFeatured : isfeatured}
      
 
     // search query and filter query
-    const query:any = {
+    const where:any = {
         // if we have multiple data querying option then we need to use AND
        AND:[
           search && {
@@ -42,16 +46,19 @@ const getAllPost = async({page=1,limit=2,search ,isFeatured : isfeatured}
                 { content:{contains:search, mode:"insensitive"}}
             ], 
         },
-        typeof isfeatured === "boolean" && {isfeatured}
+
+        typeof isfeatured === "boolean" && {isfeatured}, // filetr 
+        (tags && tags?.length > 0) && { tags: { hasEvery : tags }}  // hasEvery for looping the tags array
+
        ].filter(Boolean)
     }
-
-
+      const totalData = await prisma.post.count({where});
+      console.log({tags,sort});
     // 
       const result = await prisma.post.findMany({
         skip,
         take:limit,
-        where: query,
+        where,
         select:{
             id : true,
             title: true,
@@ -71,11 +78,18 @@ const getAllPost = async({page=1,limit=2,search ,isFeatured : isfeatured}
                 }
             }
         },
-        orderBy:{
-          createdAT:'desc'
-        }
+        orderBy: sort === "asc" || sort === "desc" ? { createdAT: sort } : undefined
       })
-      return result
+
+      return {
+        data : result,
+        pagination:{
+            page,
+            limit
+        },
+        total:totalData,
+        totalPages: Math.ceil(totalData/limit)
+      }
 }
 
 

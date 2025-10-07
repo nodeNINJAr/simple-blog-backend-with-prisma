@@ -20,11 +20,13 @@ const getAllPost = async(req:Request, res:Response)=>{
   const limit = Number(req.query.limit) || 5;
   const page = Number(req.query.page) || 1;
   const search = req?.query?.search as string|| '';
-  const isFeatured = req?.query?.isFeatured ? req?.query?.isFeatured ==="true"  : undefined
+  const isFeatured = req?.query?.isFeatured ? req?.query?.isFeatured ==="true"  : undefined;
+  const tags = req.query.tags ? (req.query.tags as string).split(",") :[]
+  const sort = req.query.sortBy ? (req.query.sortBy as string) : "desc"
 
   // 
      try{
-       const posts = await PostServices.getAllPost({page,limit, search, isFeatured});
+       const posts = await PostServices.getAllPost({page,limit, search, isFeatured,tags,sort });
        res.status(200).json({message: "All post retrived succesfully ", posts})
      }catch(err){
         console.log(err);
