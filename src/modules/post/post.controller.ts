@@ -78,11 +78,24 @@ const deletePost = async(req:Request, res:Response)=>{
 
 
 
+// stats aggregate
+const getBlogStats = async(req:Request, res:Response)=>{
+    try{
+      const result = await PostServices.getBlogStats();
+      res.status(201).json({message:" Stats retrived SuccessFully",result})
+    }
+    catch(err){
+      console.log(err);
+    }
+}
+
+
 
 export const PostController ={
     createPost,
     getAllPost,
     getPostById,
     updatePost,
-    deletePost
+    deletePost,
+    getBlogStats
 }
