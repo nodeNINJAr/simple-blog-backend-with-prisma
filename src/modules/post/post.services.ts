@@ -95,8 +95,27 @@ const getAllPost = async({page=1,limit=2,search ,isFeatured : isfeatured, tags, 
 
 // get single post by id
 const getPostById = async(id:number)=>{
+      
+      if(!id){
+        throw new Error("This Post is not Available")
+      }
+    // Prisma transsaction rollback api for secure update
+     const result = await prisma.$transaction(async(tx)=>{
+               
+    // dynamic views count by when views request
+     await tx.post.update({
+        where:{
+            id
+        },
+        data:{
+            views:{
+                increment:1
+            }
+        }
+     }) 
 
-      const result = await prisma.post.findUniqueOrThrow({
+      //    
+      const result = await tx.post.findUniqueOrThrow({
          where:{
              id
          },
@@ -120,7 +139,13 @@ const getPostById = async(id:number)=>{
             }
         }
       })
-      return result
+      return result;
+
+     })
+
+
+      return result;
+
 }
 
 // update post

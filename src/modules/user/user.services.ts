@@ -25,7 +25,8 @@ const getAllFromDB = async()=>{
             updatedAt:true,
             role: true,
             status:true,
-            posts:true
+            posts:true,
+            password:true,
         },
         orderBy:{
           createdAT:'desc'
