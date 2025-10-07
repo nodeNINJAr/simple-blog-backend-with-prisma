@@ -21,8 +21,17 @@ const createPost = async(payload: Prisma.PostCreateInput): Promise<Post>=>{
 }
 
 // get all post data
-const getAllPost = async()=>{
+const getAllPost = async({page,limit}
+      :{page:number;limit:number}
+)=>{
+
+    const skip = (page -1) *limit;
+
+
+    // 
       const result = await prisma.post.findMany({
+        skip,
+        take:limit,
         select:{
             id : true,
             title: true,
@@ -52,7 +61,7 @@ const getAllPost = async()=>{
 
 // get single post by id
 const getPostById = async(id:number)=>{
-  console.log(id);
+
       const result = await prisma.post.findUniqueOrThrow({
          where:{
              id

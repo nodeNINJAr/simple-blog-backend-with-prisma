@@ -15,10 +15,13 @@ const createPost= async(req:Request, res:Response)=>{
     }
 }
 
-// get all data
+// get all post data
 const getAllPost = async(req:Request, res:Response)=>{
+  const limit = Number(req.query.limit) || 5;
+  const page = Number(req.query.page) || 1;
+  // 
      try{
-       const posts = await PostServices.getAllPost();
+       const posts = await PostServices.getAllPost({page,limit});
        res.status(200).json({message: "All post retrived succesfully ", posts})
      }catch(err){
         console.log(err);
@@ -38,7 +41,7 @@ const getPostById = async(req:Request, res:Response)=>{
 
 }
 
-// update user
+// update post
 const updatePost = async(req:Request, res:Response)=>{
 
     const {id} = req.params;
@@ -54,7 +57,7 @@ const updatePost = async(req:Request, res:Response)=>{
 
 
 
-// delete user
+// delete post
 const deletePost = async(req:Request, res:Response)=>{
 
     const {id} = req.params;
