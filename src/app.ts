@@ -2,6 +2,7 @@ import compression from "compression";
 import cors from "cors";
 import express from "express";
 import { userRouter } from "./modules/user/user.routes";
+import { postRouter } from "./modules/post/post.routes";
 
 const app = express();
 
@@ -23,8 +24,10 @@ app.get("/", (_req, res) => {
 });
 
 
-// 
-app.use("/api/v1/users", userRouter)
+// users
+app.use("/api/v1/users", userRouter);
+// post
+app.use("/api/v1/posts", postRouter)
 
 
 
