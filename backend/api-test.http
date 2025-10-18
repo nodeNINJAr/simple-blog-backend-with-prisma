@@ -1,0 +1,21 @@
+
+###
+http://localhost:3000/
+
+# get all users
+###
+GET http://localhost:3000/api/v1/users
+
+
+
+# create an users
+###
+POST http://localhost:3000/api/v1/users/create
+
+   {
+      "name": "Alice Johnson3",
+      "email": "alice3s@example.com",
+      "phone": "+1234567890",
+      "picture": "https://example.com/profiles/alice.jpg",
+      "password": "securepassword123"
+    }

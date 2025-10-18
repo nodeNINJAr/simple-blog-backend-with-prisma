@@ -9,7 +9,8 @@ const createUser = async(req:Request, res:Response)=>{
       const result = await UserServices.createUser(req.body);
       res.status(201).json(result)
     }
-    catch(err){
+    catch(err: any){
+      res.status(404).json(err.message )
       console.log(err);
     }
 }
@@ -33,8 +34,9 @@ const getDataById = async(req:Request, res:Response)=>{
   try {
       const user = await UserServices.getDataById(Number(req.params.id))
       res.status(200).json(user);
-  } catch (error) {
+  } catch (error:any) {
       console.log(error);
+        res.status(404).json(error.message);
   }
 
 }
